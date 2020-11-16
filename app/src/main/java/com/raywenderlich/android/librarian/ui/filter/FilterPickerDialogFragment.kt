@@ -41,12 +41,15 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.ArrayAdapter
 import androidx.fragment.app.DialogFragment
+import com.raywenderlich.android.librarian.App
 import com.raywenderlich.android.librarian.R
 import com.raywenderlich.android.librarian.model.Genre
 import kotlinx.android.synthetic.main.dialog_filter_books.*
 
 class FilterPickerDialogFragment(private val onFilterSelected: (Filter?) -> Unit)
   : DialogFragment() {
+
+  private val repository by lazy { App.repository }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
       savedInstanceState: Bundle?): View? {
@@ -63,19 +66,18 @@ class FilterPickerDialogFragment(private val onFilterSelected: (Filter?) -> Unit
       updateOptions(checkedId)
     }
 
-    // TODO fetch genres from DB
     genrePicker.adapter = ArrayAdapter(
         requireContext(),
         android.R.layout.simple_spinner_dropdown_item,
-        listOf<Genre>().map { it.name }
+        repository.getGenre().map { it.name }
     )
 
     selectFilter.setOnClickListener { filterBooks() }
   }
 
-  // TODO fetch genres from DB
+
   private fun filterBooks() {
-    val selectedGenre = listOf<Genre>().firstOrNull { genre ->
+    val selectedGenre = repository.getGenre().firstOrNull { genre ->
       genre.name == genrePicker.selectedItem
     }?.id
 
