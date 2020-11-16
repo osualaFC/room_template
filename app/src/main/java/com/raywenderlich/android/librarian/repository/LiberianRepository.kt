@@ -43,5 +43,7 @@ interface LiberianRepository {
 
     fun getBooksByGenre(genreId: String): List<BookAndGenre>
 
+    fun getBooksByRating(rating:Int): List<BookAndGenre>
+
 
 }
