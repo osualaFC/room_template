@@ -8,16 +8,17 @@ import com.raywenderlich.android.librarian.model.relations.BookAndGenre
 import com.raywenderlich.android.librarian.model.relations.BookReview
 import com.raywenderlich.android.librarian.model.relations.BooksByGenre
 import com.raywenderlich.android.librarian.model.relations.ReadingListsWithBooks
+import kotlinx.coroutines.flow.Flow
 
 interface LiberianRepository {
 
-    fun addBook(book: Book)
+   suspend fun addBook(book: Book)
 
-    fun getBooks():List<BookAndGenre>
+  suspend  fun getBooks():List<BookAndGenre>
 
-    fun getBookById(bookId: String):Book
+   fun getBookById(bookId: String):Book
 
-    fun removeBook(book: Book)
+   suspend fun removeBook(book: Book)
 
     fun getGenre():List<Genre>
 
@@ -29,6 +30,8 @@ interface LiberianRepository {
 
     fun getReviews():List<BookReview>
 
+    fun getReviewsFlow(): Flow<List<BookReview>>
+
     fun getReviewById(reviewId:String): BookReview
 
     fun deleteReview(review: Review)
@@ -38,6 +41,8 @@ interface LiberianRepository {
     fun addReadingList(readingList: ReadingList)
 
     fun getReadingList(): List<ReadingListsWithBooks>
+
+    fun getReadingListFlow(): Flow<List<ReadingListsWithBooks>>
 
     fun deleteReadingList(readingList: ReadingList)
 

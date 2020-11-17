@@ -12,6 +12,8 @@ import com.raywenderlich.android.librarian.model.relations.BookAndGenre
 import com.raywenderlich.android.librarian.model.relations.BookReview
 import com.raywenderlich.android.librarian.model.relations.BooksByGenre
 import com.raywenderlich.android.librarian.model.relations.ReadingListsWithBooks
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class LiberianRepositoryImpl(
         private val bookDao: BookDao,
@@ -19,13 +21,13 @@ class LiberianRepositoryImpl(
         private val readingListDao: ReadingListDao,
         private val reviewDao: ReviewDao
 ): LiberianRepository {
-    override fun addBook(book: Book) = bookDao.addBook(book)
+    override suspend fun addBook(book: Book) = bookDao.addBook(book)
 
-    override fun getBooks(): List<BookAndGenre> = bookDao.getBooks()
+    override suspend fun getBooks(): List<BookAndGenre> = bookDao.getBooks()
 
     override fun getBookById(bookId:String): Book = bookDao.getBookById(bookId)
 
-    override fun removeBook(book: Book) = bookDao.removeBook(book)
+    override suspend fun removeBook(book: Book) = bookDao.removeBook(book)
 
     override fun getGenre(): List<Genre> = genreDao.getGenre()
 
@@ -36,6 +38,8 @@ class LiberianRepositoryImpl(
     override fun addReview(review: Review) = reviewDao.addReview(review)
 
     override fun getReviews(): List<BookReview> = reviewDao.getReviews()
+
+    override fun getReviewsFlow(): Flow<List<BookReview>> = reviewDao.getReviewFlow()
 
     override fun getReviewById(reviewId: String): BookReview = reviewDao.getReviewById(reviewId)
 
@@ -49,6 +53,14 @@ class LiberianRepositoryImpl(
     override fun getReadingList(): List<ReadingListsWithBooks> = readingListDao.getReadingList().map{
         ReadingListsWithBooks(it.id, it.name, emptyList())
     }
+
+    override fun getReadingListFlow(): Flow<List<ReadingListsWithBooks>> =
+        readingListDao.getReadingListFlow().map{items ->
+            items.map {
+                ReadingListsWithBooks(it.id, it.name, emptyList())
+            }
+        }
+
 
     override fun deleteReadingList(readingList: ReadingList) = readingListDao.removeReadingList(readingList)
 

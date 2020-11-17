@@ -4,6 +4,7 @@ import androidx.room.*
 import com.raywenderlich.android.librarian.model.ReadingList
 import com.raywenderlich.android.librarian.model.Review
 import com.raywenderlich.android.librarian.model.relations.BookReview
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ReviewDao {
@@ -25,4 +26,8 @@ interface ReviewDao {
 
     @Query("SELECT*FROM review WHERE rating >= :rating")
     fun getReviewByRating(rating:Int): List<BookReview>
+
+    @Transaction
+    @Query("SELECT * FROM review")
+    fun getReviewFlow(): Flow<List<BookReview>>
 }
