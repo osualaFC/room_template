@@ -75,7 +75,7 @@ class AddReadingListDialogFragment(private val onListAdded: () -> Unit) : Dialog
     val readingListName = readingListNameInput.text.toString()
 
     if (readingListName.isNotBlank()) {
-      val readingList = ReadingList(name = readingListName)
+      val readingList = ReadingList(name = readingListName, bookIds = emptyList())
      repository.addReadingList(readingList)
 
       onListAdded()

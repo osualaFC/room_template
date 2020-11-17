@@ -53,54 +53,55 @@ import java.util.*
 
 class AddBookReviewActivity : AppCompatActivity() {
 
-  private val repository by lazy{ App.repository}
+    private val repository by lazy { App.repository }
 
-  companion object {
-    fun getIntent(context: Context) = Intent(context, AddBookReviewActivity::class.java)
-  }
-
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    setContentView(R.layout.activity_add_book_review)
-    initUi()
-  }
-
-  private fun initUi() {
-
-    lifecycleScope.launch {
-      bookOption.adapter = ArrayAdapter(
-              this@AddBookReviewActivity,
-              android.R.layout.simple_spinner_dropdown_item,
-              repository.getBooks().map {
-                it.book.name
-              }
-
-      )
+    companion object {
+        fun getIntent(context: Context) = Intent(context, AddBookReviewActivity::class.java)
     }
 
-    addReview.setOnClickListener { addBookReview() }
-  }
-
-
-  private fun addBookReview() {
-    val rating = reviewRating.rating.toInt()
-    val bookId = repository.getGenre().firstOrNull{it.name == genrePicker.selectedItem}?.id
-
-    val imageUrl = bookImageUrl.text.toString()
-    val notes = reviewNotes.text.toString()
-
-    if (bookId != null && imageUrl.isNotBlank() && notes.isNotBlank()) {
-      val bookReview = Review(
-          bookId = bookId,
-          rating = rating,
-          notes = notes,
-          imageUrl = imageUrl
-//          entries = emptyList(),
-//          lastUpdatedDate = Date()
-      )
-      repository.addReview(bookReview)
-      setResult(Activity.RESULT_OK)
-      finish()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_add_book_review)
+        initUi()
     }
-  }
+
+    private fun initUi() {
+
+        lifecycleScope.launch {
+            bookOption.adapter = ArrayAdapter(
+                    this@AddBookReviewActivity,
+                    android.R.layout.simple_spinner_dropdown_item,
+                    repository.getBooks().map {
+                      it.book.name
+                    }
+
+            )
+        }
+
+        addReview.setOnClickListener { addBookReview() }
+    }
+
+
+    private fun addBookReview() {
+        val rating = reviewRating.rating.toInt()
+        val bookId = repository.getGenre().firstOrNull { it.name == genrePicker.selectedItem }?.id
+
+        val imageUrl = bookImageUrl.text.toString()
+        val notes = reviewNotes.text.toString()
+
+        if (bookId != null && imageUrl.isNotBlank() && notes.isNotBlank()) {
+            val bookReview = Review(
+                    bookId = bookId,
+                    rating = rating,
+                    notes = notes,
+                    imageUrl = imageUrl,
+                    lastUpdatedDate = Date(),
+                    entries = emptyList()
+
+            )
+            repository.addReview(bookReview)
+            setResult(Activity.RESULT_OK)
+            finish()
+        }
+    }
 }

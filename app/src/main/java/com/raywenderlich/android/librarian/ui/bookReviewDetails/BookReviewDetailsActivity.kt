@@ -56,7 +56,7 @@ import java.util.*
 class BookReviewDetailsActivity : AppCompatActivity() {
 
   private var bookReview: BookReview? = null
-// private val adapter by lazy { ReadingEntryAdapter(::onItemLongTapped) }
+ private val adapter by lazy { ReadingEntryAdapter(::onItemLongTapped) }
 
   private val repository by lazy{ App.repository}
 
@@ -81,10 +81,10 @@ class BookReviewDetailsActivity : AppCompatActivity() {
 
   private fun initUi() {
     readingEntriesRecyclerView.layoutManager = LinearLayoutManager(this)
-   // readingEntriesRecyclerView.adapter = adapter
+   readingEntriesRecyclerView.adapter = adapter
     addReadingEntry.setOnClickListener {
       val dialog = AddReadingEntryDialogFragment { readingEntry ->
-       // addNewEntry(readingEntry)
+        addNewEntry(readingEntry)
       }
       dialog.show(supportFragmentManager, null)
     }
@@ -99,7 +99,7 @@ class BookReviewDetailsActivity : AppCompatActivity() {
     displayData(reviewId)
   }
 
-  // TODO fetch genre data
+
   private fun displayData(reviewId: String) {
     refreshData(reviewId)
     val data = bookReview ?: return
@@ -109,10 +109,10 @@ class BookReviewDetailsActivity : AppCompatActivity() {
     reviewTitle.text = data.book.name
     reviewRating.rating = data.review.rating.toFloat()
     reviewDescription.text = data.review.notes
-   // lastUpdated.text = formatDateToText(data.review.lastUpdatedDate)
+    lastUpdated.text = formatDateToText(data.review.lastUpdatedDate)
     bookGenre.text = genre.name
 
-   // adapter.setData(data.review.entries)
+    adapter.setData(data.review.entries)
   }
 
   private fun refreshData(id: String) {
@@ -122,39 +122,39 @@ class BookReviewDetailsActivity : AppCompatActivity() {
     bookReview = storedReview
   }
 
-//  private fun onItemLongTapped(readingEntry: ReadingEntry) {
-//    createAndShowDialog(
-//        this,
-//        getString(R.string.delete_title),
-//        getString(R.string.delete_entry_message),
-//        onPositiveAction = {
-//          removeReadingEntry(readingEntry)
-//        }
-//    )
-//  }
+  private fun onItemLongTapped(readingEntry: ReadingEntry) {
+    createAndShowDialog(
+        this,
+        getString(R.string.delete_title),
+        getString(R.string.delete_entry_message),
+        onPositiveAction = {
+          removeReadingEntry(readingEntry)
+        }
+    )
+  }
 
-//  private fun addNewEntry(readingEntry: ReadingEntry) {
-//    val data = bookReview?.review ?: return
-//
-//    val updatedReview = data.copy(entries = data.entries + readingEntry,
-//        lastUpdatedDate = Date())
-//
-//    // TODO update review
-//    toast("Entry added!")
-//
-//    displayData(data.id)
-//  }
+  private fun addNewEntry(readingEntry: ReadingEntry) {
+    val data = bookReview?.review ?: return
 
-//  private fun removeReadingEntry(readingEntry: ReadingEntry) {
-//    val data = bookReview ?: return
-//    val currentReview = data.review
-//
-//    val newReview = currentReview.copy(
-//        entries = currentReview.entries - readingEntry,
-//        lastUpdatedDate = Date()
-//    )
-//    // TODO update review
-//
-//    loadData()
-//  }
+    val updatedReview = data.copy(entries = data.entries + readingEntry,
+        lastUpdatedDate = Date())
+
+   repository.updateReview(updatedReview)
+    toast("Entry added!")
+
+    displayData(data.id)
+  }
+
+  private fun removeReadingEntry(readingEntry: ReadingEntry) {
+    val data = bookReview ?: return
+    val currentReview = data.review
+
+    val newReview = currentReview.copy(
+        entries = currentReview.entries - readingEntry,
+        lastUpdatedDate = Date()
+    )
+   repository.updateReview(newReview)
+
+    loadData()
+  }
 }

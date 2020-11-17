@@ -4,10 +4,17 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
+import com.raywenderlich.android.librarian.database.converters.BookIdsConverter
+import com.raywenderlich.android.librarian.database.converters.DateConverter
+import com.raywenderlich.android.librarian.database.converters.ReadingEntryConverter
 import com.raywenderlich.android.librarian.database.dao.BookDao
 import com.raywenderlich.android.librarian.database.dao.GenreDao
 import com.raywenderlich.android.librarian.database.dao.ReadingListDao
 import com.raywenderlich.android.librarian.database.dao.ReviewDao
+import com.raywenderlich.android.librarian.database.migration.migration_1_2
+import com.raywenderlich.android.librarian.database.migration.migration_2_3
+import com.raywenderlich.android.librarian.database.migration.migration_3_4
 import com.raywenderlich.android.librarian.model.Book
 import com.raywenderlich.android.librarian.model.Genre
 import com.raywenderlich.android.librarian.model.ReadingList
@@ -15,8 +22,10 @@ import com.raywenderlich.android.librarian.model.Review
 
 @Database(
         entities = [Book::class, Genre::class, Review::class, ReadingList::class],
-        version = 1
+        version = 4
 )
+
+@TypeConverters(DateConverter::class, ReadingEntryConverter::class, BookIdsConverter::class)
 abstract class LiberianDatabase : RoomDatabase(){
 
     abstract fun bookDao(): BookDao
@@ -34,6 +43,7 @@ abstract class LiberianDatabase : RoomDatabase(){
                     DATABASE_NAME
             )
                     .allowMainThreadQueries()
+                    .addMigrations(migration_1_2, migration_2_3, migration_3_4)
                     .build()
 
         }

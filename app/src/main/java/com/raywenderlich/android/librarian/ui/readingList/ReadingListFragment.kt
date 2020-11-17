@@ -118,7 +118,7 @@ class ReadingListFragment : Fragment() {
   }
 
   private fun removeReadingList(readingList: ReadingListsWithBooks) {
-   repository.deleteReadingList(ReadingList(readingList.id, readingList.name))
+   repository.deleteReadingList(ReadingList(readingList.id, readingList.name, emptyList()))
 
   }
 
